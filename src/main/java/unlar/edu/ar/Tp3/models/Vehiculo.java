@@ -14,6 +14,6 @@ public abstract class Vehiculo {
 
     private int bateria;
 
-    private float tarifaBase;
+    private double tarifaBase;
 
 }

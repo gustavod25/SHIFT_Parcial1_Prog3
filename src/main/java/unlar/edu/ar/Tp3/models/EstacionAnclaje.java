@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EstacionAnclaje {
+    @SuppressWarnings("unused")
     private String nombre;
     private List<Vehiculo> vehiculos = new ArrayList<>();
 

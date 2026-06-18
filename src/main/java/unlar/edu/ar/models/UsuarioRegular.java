@@ -7,6 +7,6 @@ public class UsuarioRegular extends Usuario {
 
     @Override
     public double aplicarDescuento(double monto) {
-        return monto;
+        return monto * 0.85;
     }
 }

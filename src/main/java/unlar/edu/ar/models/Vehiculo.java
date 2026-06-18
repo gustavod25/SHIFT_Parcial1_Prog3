@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.models;
+package unlar.edu.ar.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

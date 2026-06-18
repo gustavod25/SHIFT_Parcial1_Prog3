@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.models;
+package unlar.edu.ar.models;
 
 public class BicicletaElectrica extends Vehiculo {
     @SuppressWarnings("unused")

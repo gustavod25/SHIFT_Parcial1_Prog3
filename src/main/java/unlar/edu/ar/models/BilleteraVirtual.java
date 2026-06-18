@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.pago;
+package unlar.edu.ar.models;
 
 public class BilleteraVirtual implements ProcesadorPago {
     @Override

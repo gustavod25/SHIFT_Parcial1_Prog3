@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.models;
+package unlar.edu.ar.models;
 
 public class UsuarioRegular extends Usuario {
     public UsuarioRegular(String id, String nombre) {

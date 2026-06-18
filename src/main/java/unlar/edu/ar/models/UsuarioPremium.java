@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.models;
+package unlar.edu.ar.models;
 
 public class UsuarioPremium extends Usuario {
     private final double descuento = 0.15;

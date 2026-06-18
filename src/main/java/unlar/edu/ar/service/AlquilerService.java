@@ -1,8 +1,10 @@
 package unlar.edu.ar.service;
 
-import unlar.edu.ar.Tp3.models.*;
-import unlar.edu.ar.Tp3.pago.*;
-import unlar.edu.ar.api.dto.*;
+import unlar.edu.ar.api.dto.DesbloqueoRequest;
+import unlar.edu.ar.api.dto.AlquilerResponse;
+
+import unlar.edu.ar.models.*;
+
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;

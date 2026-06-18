@@ -1,4 +1,4 @@
-package unlar.edu.ar.Tp3.pago;
+package unlar.edu.ar.models;
 
 public class Pago {
     public static Object obtenerProcesador(String tipo) {

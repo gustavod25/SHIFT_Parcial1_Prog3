@@ -1,6 +1,7 @@
 package unlar.edu.ar.models;
 
-import unlar.edu.ar.models.EstadoEspera.EstadoEnEspera;
+import unlar.edu.ar.exception.BusinessException;
+import unlar.edu.ar.models.EstadoEnEspera;
 
 public class EstadoViaje {
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Vehiculo {
+public abstract class Vehiculo implements Comparable<Vehiculo> {
 
     private String patente;
 
@@ -16,6 +16,13 @@ public abstract class Vehiculo {
 
     private double tarifaBase;
     private EstadoVehiculo estado;
+
+    public Vehiculo(String patente, int bateria, double tarifaBase) {
+        this.patente = patente;
+        this.bateria = bateria;
+        this.tarifaBase = tarifaBase;
+        this.estado = new EstadoEnEspera();
+    }
 
     public String getPatente() {
         return patente;

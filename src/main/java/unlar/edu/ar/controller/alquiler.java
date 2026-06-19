@@ -25,18 +25,19 @@ public class alquiler {
         this.alquilerService = alquilerService;
     }
 
-    @PostMapping("/desbloqueo")
-    public ResponseEntity<?> desbloquearVehiculo(@RequestBody DesbloqueoRequest request) {
-        try {
-            AlquilerResponse response = alquilerService.procesarDesbloqueo(request);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-        }
+    public alquiler(alquiler alquilerService) {
+        this.alquilerService = alquilerService;
+    }
+
+    @GetMapping("/desbloquear")
+    public ResponseEntity<VehiculoResponse> desbloquear(@RequestBody DesbloquearRequest request) {
+        VehiculoResponse response = alquilerService.procesarDesbloqueo(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/finalizar")
     public ResponseEntity<VehiculoResponse> finalizar(@RequestBody FinalizarRequest request) {
-        return ResponseEntity.ok(alquilerService.procesarFinalizacion(request));
+        VehiculoResponse response = alquilerService.procesarFinalizacion(request);
+        return ResponseEntity.ok(response);
     }
 }

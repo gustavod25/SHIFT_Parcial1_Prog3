@@ -1,5 +1,7 @@
 package unlar.edu.ar.models;
 
+import unlar.edu.ar.exception.BusinessException;
+
 public class EstadoEnEspera implements EstadoVehiculo {
 
     @Override

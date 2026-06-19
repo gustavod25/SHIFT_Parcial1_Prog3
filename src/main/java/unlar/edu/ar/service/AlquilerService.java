@@ -1,18 +1,31 @@
 package unlar.edu.ar.service;
 
 import unlar.edu.ar.api.dto.DesbloqueoRequest;
+import unlar.edu.ar.controller.TarifaDescendenteComparator;
 import unlar.edu.ar.api.dto.AlquilerResponse;
 
 import unlar.edu.ar.models.*;
+import unlar.edu.ar.payment.FabricaProcesadorPago;
+import unlar.edu.ar.strategy.EstrategiaTarifa;
+import unlar.edu.ar.strategy.TarifaEstandar;
 
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class AlquilerService {
     private final Map<String, Usuario> usuariosDb = new HashMap<>();
     private final EstacionAnclaje estacionSimulada = new EstacionAnclaje("Estacion Central");
+    private final Map<String, Vehiculo> vehiculosDb = new HashMap<>();
+
+    private EstrategiaTarifa estrategiaTarifaActiva = new TarifaEstandar();
 
     public AlquilerService() {
         usuariosDb.put("U1", new UsuarioRegular("U1", "Juan Pérez"));
@@ -55,5 +68,72 @@ public class AlquilerService {
 
         return new AlquilerResponse("Desbloqueo exitoso.", vehiculoSeleccionado.getPatente(),
                 vehiculoSeleccionado.getClass().getSimpleName(), importeFinal);
+    }
+
+    public void setEstrategiaTarifa(EstrategiaTarifa nuevaEstrategia) {
+        this.estrategiaTarifaActiva = nuevaEstrategia;
+    }
+
+    public VehiculoResponse procesarDesbloqueo(DesbloquearRequest req) {
+        Usuario usuario = usuariosDb.get(req.idUsuario());
+        if (usuario == null)
+            throw new BusinessException("Usuario no registrado.");
+
+        Vehiculo v = vehiculosDb.get(req.patente());
+        if (v == null)
+            throw new BusinessException("Vehículo No Encontrado");
+
+        if (v.getBateria() < 15)
+            throw new BusinessException("Batería Insuficiente");
+
+        v.getEstado().prepararParaViaje(v);
+        v.getEstado().iniciarViaje(v);
+
+        return new VehiculoResponse(v.getPatente(), 0.0, "0 min", v.getEstado().getNombre());
+    }
+
+    public VehiculoResponse procesarFinalizacion(FinalizarRequest req) {
+        Vehiculo v = vehiculosDb.get(req.patente());
+        if (v == null)
+            throw new BusinessException("Vehículo No Encontrado");
+
+        Usuario usuario = usuariosDb.get(req.idUsuario());
+        if (usuario == null)
+            throw new BusinessException("Usuario Inválido");
+
+        v.getEstado().finalizarViaje(v);
+
+        double costoCalculado = estrategiaTarifaActiva.calcularCosto(v.getTarifaBase(), req.minutosTranscurridos());
+        double costoFinal = usuario.aplicarDescuento(costoCalculado);
+
+        ProcesadorPago procesador = FabricaProcesadorPago.obtenerProcesador(req.metodoPago());
+        procesador.cobrar(costoFinal);
+
+        return new VehiculoResponse(v.getPatente(), costoFinal, req.minutosTranscurridos() + " min",
+                v.getEstado().getNombre());
+    }
+
+    public List<String> deduplicarAlertasGPS(List<String> reportesSucios) {
+        List<String> unicos = new ArrayList<>();
+        Set<String> registroAuxiliar = new HashSet<>();
+
+        for (String reporte : reportesSucios) {
+            if (registroAuxiliar.add(reporte)) {
+                unicos.add(reporte);
+            }
+        }
+        return unicos;
+    }
+
+    public List<Vehiculo> obtenerPorCargaNatural() {
+        List<Vehiculo> copiaConcurrente = new ArrayList<>(vehiculosDb.values());
+        Collections.sort(copiaConcurrente);
+        return copiaConcurrente;
+    }
+
+    public List<Vehiculo> obtenerPorTarifaDescendente() {
+        List<Vehiculo> copiaConcurrente = new ArrayList<>(vehiculosDb.values());
+        Collections.sort(copiaConcurrente, new TarifaDescendenteComparator());
+        return copiaConcurrente;
     }
 }

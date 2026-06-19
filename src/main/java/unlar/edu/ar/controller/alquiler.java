@@ -6,6 +6,15 @@ import org.springframework.web.bind.annotation.*;
 import unlar.edu.ar.api.dto.*;
 import unlar.edu.ar.service.AlquilerService;
 
+record DesbloquearRequest(String idUsuario, String patente) {
+}
+
+record FinalizarRequest(String idUsuario, String patente, int minutosTranscurridos, String metodoPago) {
+}
+
+record VehiculoResponse(String patente, double costoFinalCalculado, String tiempoTranscurrido, String faseActual) {
+}
+
 @RestController
 @RequestMapping("/api/alquileres")
 public class alquiler {
@@ -24,5 +33,10 @@ public class alquiler {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
+    }
+
+    @GetMapping("/finalizar")
+    public ResponseEntity<VehiculoResponse> finalizar(@RequestBody FinalizarRequest request) {
+        return ResponseEntity.ok(alquilerService.procesarFinalizacion(request));
     }
 }
